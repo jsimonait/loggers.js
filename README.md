@@ -1,6 +1,6 @@
 # Loggers.js
 
-Logger for [firebug-lite](https://getfirebug.com/firebuglite)
+Logger best with [firebug-lite](https://getfirebug.com/firebuglite)
 
 #### Feature list:
 

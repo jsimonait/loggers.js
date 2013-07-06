@@ -1,5 +1,5 @@
 /**
- * Loggers.js - logger for firebug-lite
+ * Loggers.js
  * @author: jsimonait <jsimonait@gmail.com>
  */
 
