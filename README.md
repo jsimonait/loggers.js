@@ -33,7 +33,7 @@ var l = loggers.create('Name');
 Or with options (for change default options use **loggers.options**)
 ```javascript
 var l = loggers.create('Name', {
-	enabled: true,
+    enabled: true,
     filters: new Array(),
     showLogInfo: true,
     logInfoTemplate: '{time} [{name}] {key}',
@@ -121,4 +121,5 @@ Or more advanced
 ```javascript
 l.endLog('Key')();
 ```
-
+##License
+Licensed under the MIT license.
