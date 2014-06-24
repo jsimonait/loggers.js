@@ -39,15 +39,15 @@ l.log()('Log message');
 <h3>2. Grouping </h3>
 <pre class="prettyprint">
 var l = loggers.create('Demo2');
-l.startLog('gKey1')('Groupe 1');
+l.startGroup('gKey1')('Groupe 1');
 l.log()('Log message', 1);
 l.log()('Log message', 2);
-l.endLog('gKey1')('Groupe 1');
+l.endGroup('gKey1')('Groupe 1');
 
-l.startLog('gKey2', true)('Groupe 2');
+l.startGroup('gKey2', true)('Groupe 2');
 l.log()('Log message', 3);
 l.log()('Log message', 4);
-l.endLog('gKey2')('Groupe 2');
+l.endGroup('gKey2')('Groupe 2');
 
 l.log()('Log message');
 </pre>
@@ -112,15 +112,15 @@ l.log()('Log message');
 			// Demo 2
 			document.getElementById('demo2').onclick = function() { 
 				var l = loggers.create('Demo2');
-				l.startLog('gKey1')('Groupe 1');
+				l.startGroup('gKey1')('Groupe 1');
 				l.log()('Log message', 1);
 				l.log()('Log message', 2);
-				l.endLog('gKey1')('Groupe 1');
+				l.endGroup('gKey1')('Groupe 1');
 
-				l.startLog('gKey2', true)('Groupe 2');
+				l.startGroup('gKey2', true)('Groupe 2');
 				l.log()('Log message', 3);
 				l.log()('Log message', 4);
-				l.endLog('gKey2')('Groupe 2');
+				l.endGroup('gKey2')('Groupe 2');
 
 				l.log()('Log message');
 			};

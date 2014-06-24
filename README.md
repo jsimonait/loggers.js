@@ -8,6 +8,7 @@ Logger best with [firebug-lite](https://getfirebug.com/firebuglite)
  * Filtering mesages by key
  * Create/Get/Remove logger
  * Enable/Disable logger
+ * Store logs
  * Setup log info template
  * No dependencies
 
@@ -34,6 +35,8 @@ Or with options (for change default options use **loggers.options**)
 ```javascript
 var l = loggers.create('Name', {
     enabled: true,
+    enabledLevels: ['log', 'info', 'warn', 'error', 'group', 'groupCollapsed', 'groupEnd'],
+    store: true,
     filters: new Array(),
     showLogInfo: true,
     logInfoTemplate: '{time} [{name}] {key}',
@@ -54,6 +57,8 @@ For change options use
 ```javascript
 l.options = {
     enabled: true,
+    enabledLevels: ['log', 'info', 'warn', 'error', 'group', 'groupCollapsed', 'groupEnd'],
+    store: true,
     filters: new Array(),
     showLogInfo: true,
     logInfoTemplate: '{time} [{name}] {key}',
@@ -79,7 +84,10 @@ loggers.getList();
 ```
 
 ### **l.log(key)(arguments)**
-Simple log function
+### **l.info(key)(arguments)**
+### **l.warn(key)(arguments)**
+### **l.error(key)(arguments)**
+Log function
 
 * **key** - (String) OPTIONAL: key need for log filtering
 * **arguments** - (Params) log arguments
@@ -92,7 +100,7 @@ Or more advanced
 l.log('Key1')('Message', 1, 2, 3);
 ```
 
-### **l.startLog(key, collapsed)(arguments)**
+### **l.startGroup(key, collapsed)(arguments)**
 
 Start grouped log
 
@@ -101,25 +109,25 @@ Start grouped log
 * **arguments** - (Params) log arguments
 
 ```javascript
-l.startLog()('Message');
+l.startGroup()('Message');
 ```
 Or more advanced
 ```javascript
-l.startLog('Key', true)('Message', 1, 2, 3);
+l.startGroup('Key', true)('Message', 1, 2, 3);
 ```
 
-### **l.endLog(key)()**
+### **l.endGroup(key)()**
 
 End gouped log
 
 * **key** - (String) OPTIONAL: key need for log filtering
 
 ```javascript
-l.endLog()();
+l.endGroup()();
 ```
 Or more advanced
 ```javascript
-l.endLog('Key')();
+l.endGroup('Key')();
 ```
 ##License
 Licensed under the MIT license.

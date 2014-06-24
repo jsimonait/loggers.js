@@ -9,54 +9,104 @@
         this.oprions = options;
         var o = this.oprions;
 
+        var logs = [];
+
         this.log = function (key) {
             return function () {
-                if (!o.enabled || !console.log || !canLog(key)) return;
+                if (!o.enabled || o.enabledLevels.indexOf('log') < 0 || !canLog(key)) return;
 
-                if(o.showLogInfo){
-                    var logInfo = getLogInfo(key);
-                    if (arguments.length > 0) {
-                        console.log(logInfo, arguments);
-                    } else {
-                        console.log(logInfo);
-                    }
-                }else{
-                    console.log(arguments);
-                }
+                writeLog('log', key, arguments);
             };
         };
 
-        this.startLog = function (key, collapsed) {
+        this.info = function(key){
             return function () {
-                if (!o.enabled || !console.group || !console.groupCollapsed || !canLog(key)) return;
+                if (!o.enabled || o.enabledLevels.indexOf('info') < 0 || !canLog(key)) return;
 
-                var logInfo = getLogInfo(key);
+                writeLog('info', key, arguments);
+            };  
+        };
+
+        this.warn = function(key){
+            return function () {
+                if (!o.enabled || o.enabledLevels.indexOf('warn') < 0 || !canLog(key)) return;
+
+                writeLog('warn', key, arguments);
+            };  
+        };
+
+        this.error = function(key){
+            return function () {
+                if (!o.enabled || o.enabledLevels.indexOf('error') < 0 || !canLog(key)) return;
+
+                writeLog('error', key, arguments);
+            };  
+        };
+
+        this.startGroup = function (key, collapsed) {
+            return function () {
+                if (!o.enabled || 
+                    o.enabledLevels.indexOf('group') < 0 || 
+                    o.enabledLevels.indexOf('groupCollapsed') < 0 || 
+                    !canLog(key)) return;
 
                 var gFunc = 'group';
                 if (collapsed != undefined && collapsed == true) {
                     gFunc = 'groupCollapsed';
                 }
 
-                if(o.showLogInfo){
-                    if (arguments.length > 0) {
-                        console[gFunc](logInfo, arguments);
-                    } else {
-                        console[gFunc](logInfo);
-                    }
-                }else{
-                    console.log(arguments);
-                }
+                writeLog(gFunc, key, arguments);
             };
         };
 
-        this.endLog = function (key) {
+        this.endGroup = function (key) {
             return function () {
-                if (!o.enabled || !console.groupEnd || !canLog(key)) return;
+                if (!o.enabled || 
+                    o.enabledLevels.indexOf('groupEnd') < 0 ||
+                    !console.groupEnd || 
+                    !canLog(key)) return;
 
                 console.groupEnd();
             };
         };
 
+        this.getStore = function(){
+            return logs;
+        };
+
+        this.clearStore = function(){
+            logs = [];
+        };
+
+        var writeLog = function(level, key, args){
+            if(!console[level]) return;
+
+            if(o.showLogInfo){
+                var logInfo = getLogInfo(key);
+                if (args.length > 0) {
+                    console[level](logInfo, args);
+                } else {
+                    console[level](logInfo);
+                }
+            }else{
+                console[level](args);
+            }
+
+            store(level, key, args);
+        };
+
+        var store = function(level, key, args){
+            if(!o.store) return;
+
+            var log = {
+                date: new Date(),
+                level: level,
+                key: key,
+                args: args
+            };
+            
+            logs.push(log);
+        };
 
         var canLog = function (key) {
             if (key == undefined ||  key == null || key == '') return true;
@@ -109,8 +159,12 @@
         var that = this,
             LOGGERS = [];
 
+        this.version = '0.1.0'
+
         this.options = {
             enabled: true,
+            enabledLevels: ['log', 'info', 'warn', 'error', 'group', 'groupCollapsed', 'groupEnd'],
+            store: true,
             filters: new Array(),
             showLogInfo: true,
             logInfoTemplate: '{time} [{name}] {key}',
@@ -141,6 +195,23 @@
             return LOGGERS; 
         };
 
+        this.getStore = function(){
+            var list = [];
+            for (var name in LOGGERS){
+                var store = LOGGERS[name].getStore();
+                for (var i in store){
+                    store[i]['name'] = name;
+                    list.push(store[i]);
+                }   
+            }
+            return list;
+        };
+
+        this.clearStore = function () { 
+            for (var name in LOGGERS){
+                LOGGERS[name].clearStore();   
+            } 
+        };
 
         var extend = function (a, b) {
             for (var key in b){
