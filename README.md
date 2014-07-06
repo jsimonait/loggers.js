@@ -37,7 +37,7 @@ var l = loggers.create('Name', {
     enabled: true,
     enabledLevels: ['log', 'info', 'warn', 'error', 'group', 'groupCollapsed', 'groupEnd'],
     store: true,
-    filters: new Array(),
+    filters: [],
     showLogInfo: true,
     logInfoTemplate: '{time} [{name}] {key}',
     timeTemplate: '{hours}:{minutes}:{seconds}.{milliseconds}'

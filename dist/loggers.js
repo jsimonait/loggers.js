@@ -1,9 +1,8 @@
-/**
- * Loggers.js
- * @author: jsimonait <jsimonait@gmail.com>
- */
-
+/*! Loggers.js - v0.1.0 - 2014-07-06 
+* @author: jsimonait <jsimonait@gmail.com> */ 
 (function (window) {
+
+    "use strict";
 
     var Logger = function (name, options) {
         this.oprions = options;
@@ -51,7 +50,7 @@
                     !canLog(key)) return;
 
                 var gFunc = 'group';
-                if (collapsed != undefined && collapsed == true) {
+                if (collapsed !== undefined && collapsed === true) {
                     gFunc = 'groupCollapsed';
                 }
 
@@ -109,7 +108,7 @@
         };
 
         var canLog = function (key) {
-            if (key == undefined ||  key == null || key == '') return true;
+            if (key === undefined ||  key === null || key === '') return true;
             if (typeof key != 'string') throw new Error("Type of log key must be 'String'");
 
             var f = o.filters;
@@ -123,7 +122,7 @@
         };
 
         var getLogInfo = function (key) {
-            if(key == undefined ||  key == null) key = '';
+            if(key === undefined ||  key === null) key = '';
 
             var info = o.logInfoTemplate;
 
@@ -155,24 +154,23 @@
 
     };
 
-    window.loggers = new function () {
-        var that = this,
-            LOGGERS = [];
+    var Loggers = function () {
+        var LOGGERS = [];
 
-        this.version = '0.1.0'
+        this.version = '0.1.0';
 
         this.options = {
             enabled: true,
             enabledLevels: ['log', 'info', 'warn', 'error', 'group', 'groupCollapsed', 'groupEnd'],
             store: true,
-            filters: new Array(),
+            filters: [],
             showLogInfo: true,
             logInfoTemplate: '{time} [{name}] {key}',
             timeTemplate: '{hours}:{minutes}:{seconds}.{milliseconds}'
         };
 
         this.create = function(name, options){
-            if (name == undefined || name == null || name == '') {
+            if (name === undefined || name === null || name === '') {
                 throw new Error("A Logger must have a name");
             }
 
@@ -197,19 +195,24 @@
 
         this.getStore = function(){
             var list = [];
+
             for (var name in LOGGERS){
-                var store = LOGGERS[name].getStore();
-                for (var i in store){
-                    store[i]['name'] = name;
-                    list.push(store[i]);
-                }   
+                 if( LOGGERS.hasOwnProperty( name ) ) {
+                    var store = LOGGERS[name].getStore();
+                    for (var i=0; i<store.length; i++){
+                        store[i].name = name;
+                        list.push(store[i]);
+                    }     
+                }
             }
             return list;
         };
 
         this.clearStore = function () { 
             for (var name in LOGGERS){
-                LOGGERS[name].clearStore();   
+                if( LOGGERS.hasOwnProperty( name ) ) {
+                    LOGGERS[name].clearStore();
+                }   
             } 
         };
 
@@ -223,16 +226,17 @@
         };
 
         var clone = function (obj) {
-            if (null == obj || "object" != typeof obj) return obj;
-            
+            if (null === obj || "object" !== typeof obj) return obj;
+            var copy;
+          
             if (obj instanceof Date) {
-                var copy = new Date();
+                copy = new Date();
                 copy.setTime(obj.getTime());
                 return copy;
             }
             
             if (obj instanceof Array) {
-                var copy = [];
+                copy = [];
                 for (var i = 0, len = obj.length; i < len; i++) {
                     copy[i] = clone(obj[i]);
                 }
@@ -240,13 +244,15 @@
             }
 
             if (obj instanceof Object) {
-                var copy = {};
+                copy = {};
                 for (var attr in obj) {
                     if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
                 }
                 return copy;
             }
-        }
+        };
     };
+
+    window.loggers = new Loggers();
 
 })(window);
